@@ -35,6 +35,7 @@ tickers=[
 #data_head = ['date','close']
 
 #im just gonna fucking keep the original head what the fuck even was that error
+
 data = read_csv("closeaapl.csv")
 data['Date'] = pd.to_datetime(data['Date'])
 data['Date'] = data['Date'].astype('int64').astype(float)
@@ -52,53 +53,45 @@ X = data[train_head]
 y = data[target_head]
 #print(X,"\n", y)
 
-x = data['Date'].values
-y = data['Close'].values
+x = data['Date'].values.reshape(-1, 1)
+y = data['Close'].values.reshape(-1, 1)
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=1)
-
-print(x_train.shape, "\n", x_test.shape)
-
-lr_regress= LinearRegression()
-lr_regress.fit(x_train, y_train)
-y_linear_pred = lr_regress.predict(x_test)
-
-#SEED = 1
-
-#dt_model = DecisionTreeRegressor(max_depth = 8, min_samples_leaf= 0.13, random_state=1)
-
-#dt_model.fit(x_train, y_train)
-#y_pred = dt_model.predict(x_test)
-#y_pred_train = dt_model.predict(x_train)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
 
 
-poly_reg = PolynomialFeatures(degree=4)
-X_poly = poly_reg.fit_transform(x_train)
-x_poly_test = poly_reg.fit_trainsform(x_test)
-poly_reg.fit(X_poly,y_train)
-y_pred = poly_reg.predict(X_poly_test)
+poly_transform = PolynomialFeatures(degree=4, include_bias=False)
 
-lr_regress= LinearRegression()
-lr_regress.fit(x_train, y_train)
-y_linear_pred = lr_regress.predict(x_test)
+x_poly_train = poly_transform.fit_transform(x_train)
+x_poyl_test = poly_transform.fit_transform(x_test)
 
+linear_reg = LinearRegression()
 
-mae = mean_absolute_error(y_test,y_pred)
-mse = mean_squared_error(y_test,y_pred)
-rmse = np.sqrt(mse)
-r2 = r2_score(y_test,y_pred)
+linear_reg.fit(x_poly_train, y_train)
 
-#print('\n slope:', lr_regress.coef_, '\nIntercept: ', lr_regress.intercept_, '\nMean absolute error: {:.2f}'.format(mae), '\nmean_squared_error: {:.2f}'.format(mse), '\nroot mean squared error: {:.2f}'.format(rmse), '\nR2 score: ', r2)
+x_grid_train = np.arange(min(x_train), max(x_train) + .01, step=0.01)
+x_grid_test = np.arange(min(x_test), max(x_test) + .01, step=0.01)
 
-#print('\n slope:', dt_model.coef_, '\nIntercept: ', dt_model.intercept_, '\nMean absolute error: {:.2f}'.format(mae), '\nmean_squared_error: {:.2f}'.format(mse), '\nroot mean squared error: {:.2f}'.format(rmse), '\nR2 score: ', r2)
+x_grid_train = x_grid_train.reshape(len(x_grid_train), 1)
+x_grid_test = x_grid_train.reshape(len(x_grid_test), 1)
 
 
-plt.scatter(x_test, y_test, s=10)
+
+
+#mae = mean_absolute_error(y_test,y_pred)
+#mse = mean_squared_error(y_test,y_pred)
+#rmse = np.sqrt(mse)
+#r2 = r2_score(y_test,y_pred)
+
+plt.scatter(x, y, color='blue', label='Training Data')
+#plt.scatter(x_test, y_test, label ='data' , color = 'blue')
+plt.plot(x_grid_train, linear_reg.predict(poly_transform.transform(x_grid_train)), color='red', label='model curve')
 plt.xlabel('x - time')
 plt.ylabel('y - price')
-plt.plot(x_test, y_pred, color='r')
-plt.figure(1)
-plt.savefig('polynomtest.svg')
+#plt.plot(x,pol_reg.predict(poly_reg.fit_transform(x)), color='red')
+plt.legend()
+plt.show()
+#plt.figure(1)
+#plt.savefig('polynomtest.svg')
 
 
 
