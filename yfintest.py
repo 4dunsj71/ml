@@ -59,20 +59,24 @@ y = data['Close'].values.reshape(-1, 1)
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
 
 
-poly_transform = PolynomialFeatures(degree=4, include_bias=False)
+poly_transform = PolynomialFeatures(degree=2)
 
 x_poly_train = poly_transform.fit_transform(x_train)
-x_poyl_test = poly_transform.fit_transform(x_test)
+x_poly_test = poly_transform.fit_transform(x_test)
 
 linear_reg = LinearRegression()
 
 linear_reg.fit(x_poly_train, y_train)
 
-x_grid_train = np.arange(min(x_train), max(x_train) + .01, step=0.01)
-x_grid_test = np.arange(min(x_test), max(x_test) + .01, step=0.01)
+
+x_grid_train = np.arange(min(x_train),max(x_train),0.1)
+x_grid_test = np.arange(min(x_test),max(x_test),0)
 
 x_grid_train = x_grid_train.reshape(len(x_grid_train), 1)
-x_grid_test = x_grid_train.reshape(len(x_grid_test), 1)
+x_grid_test = x_grid_test.reshape(len(x_grid_test), 1)
+
+#x_grid_train = x_train.reshape(len(x_train), 1)
+#x_grid_test = x_test.reshape(len(x_test), 1)
 
 
 
@@ -84,7 +88,7 @@ x_grid_test = x_grid_train.reshape(len(x_grid_test), 1)
 
 plt.scatter(x, y, color='blue', label='Training Data')
 #plt.scatter(x_test, y_test, label ='data' , color = 'blue')
-plt.plot(x_grid_train, linear_reg.predict(poly_transform.transform(x_grid_train)), color='red', label='model curve')
+plt.plot(x_grid_train, linear_reg.predict(poly_transform.fit_transform(x_grid_train)), color='red', label='model curve')
 plt.xlabel('x - time')
 plt.ylabel('y - price')
 #plt.plot(x,pol_reg.predict(poly_reg.fit_transform(x)), color='red')
