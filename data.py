@@ -16,8 +16,9 @@ from matplotlib import pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, accuracy_score, confusion_matrix, classification_report
 from statsmodels.tsa.stattools import adfuller
 from numpy import log
-
-columns=['symbol',
+from time import sleep
+from progress.bar import Bar
+head = ['symbol',
         'security',
         'filings',
         'gics',
@@ -27,24 +28,26 @@ columns=['symbol',
         'cik',
         'founded']
 
-sp500 = read_csv("s&p500.csv",skiprows=[0], names = columns)
-print(sp500.head(5))
-print(sp500['symbol'])
-sp500['symbol'] = sp500['symbol'].str.lower()
-print(sp500.head(5))
+
+sp500 = read_csv("s&p500.csv",skiprows=[0], names = head)
+sp500['symbol'] = sp500['symbol'].str.replace(' ','')
+
+tickers = sp500['symbol'].tolist()
+print(tickers)
+
 sp500data = pd.DataFrame()
-
-tickers = sp500['symbol']
-print(tickers.head(5))
-ticker = yf.Ticker('mmm')
-print(ticker.history(period='10d', interval='1d'))
-
-for symbol in tickers:
-    ticker = yf.Ticker(symbol)
-    data = ticker.history(period='300d', interval='1d')
-    sp500data[symbol] = data['Close']
-        
-
+with Bar('Retrieving data', fill='|') as bar:
+    for symbol in tickers:
+        try:
+            ticker = yf.Ticker(str(symbol))
+            data = ticker.history(period='300d', interval='1d')
+            sp500data[symbol] = data['Close']
+            print('found:', symbol)
+            bar.next()    
+        except:
+            print("yahoo finance capped us laddy")
+        finally:
+            sp500data.to_csv("SnP500Close.csv")
 
 
 #pulls historical close prices for tickers listed
