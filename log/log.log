@@ -1,0 +1,6 @@
+2021-12-18 12:12:08,179 ERROR __main__ Input contains NaN, infinity or a value too large for dtype('float64').
+NoneType: None
+2021-12-18 12:15:02,052 ERROR __main__ '_io.TextIOWrapper' object is not callable
+NoneType: None
+2021-12-18 12:16:06,716 ERROR __main__ Input contains NaN, infinity or a value too large for dtype('float64').
+NoneType: None
