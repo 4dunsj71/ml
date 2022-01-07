@@ -4,3 +4,5 @@ NoneType: None
 NoneType: None
 2021-12-18 12:16:06,716 ERROR __main__ Input contains NaN, infinity or a value too large for dtype('float64').
 NoneType: None
+2021-12-21 12:55:57,237 ERROR __main__ Input contains NaN, infinity or a value too large for dtype('float64').
+NoneType: None
