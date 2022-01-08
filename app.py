@@ -18,7 +18,7 @@ def searchTicker():
             tickerConf['text'] = 'ticker found on yfinance, retrieved.\n{}'
         except:
             tickerConf['text'] = 'Ticker not found, check spelling'
-   
+  
 
 
 window = tk.Tk()
