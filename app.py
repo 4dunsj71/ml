@@ -1,47 +1,33 @@
 import os
 import tkinter as tk
 import yfinance as yf
-
-pwd = '/home/james/documents/coursework/year3/machinelearning/ml'
-
-def findFile(fileName):
-    for root, dirs, files in os.walk(pwd):
-        if fileName in files:
-            print('found')
-            return True
-        else:
-            print('not found')
-            return False
-            
+from yfinpull import *
+from pred import *
+from newclustavg import *
+from pullindexhist import *
 
 def searchTicker():
     tickerName = tickerIn.get()
-    ticker = yf.Ticker(tickerName)
-    print(ticker.isin)
-    fileStr = "close{}.csv".format(tickerName)
-    print(fileStr)
-    if  len(ticker.isin) < 4:
-        tickerConf['text'] = "ticker not found, try again"
-    else:
-        if findFile(fileStr):
-            print("Data already retrieved")
-        else:
-            data = ticker.history(period='300d', interval='1d')
-            tickerConf['text'] = "ticker found and data retreived!"
-            data['Close'].to_csv("close{}.csv".format(tickerName))
-            
-            
+    try:
+        data = read_csv('csv/close{}.csv'.format(tickerName))
+        if len(data) == 300:
+            tickerConf['text'] = 'ticker found' 
+    except:
+        try:
+            data = yfinpull(tickerName)
+            tickerConf['text'] = 'ticker found on yfinance, retrieved.\n{}'
+        except:
+            tickerConf['text'] = 'Ticker not found, check spelling'
+   
 
-#def sub(var,entry):
-#    print("button pressed")
-#    var = entry.get()
-#    print(var)
 
 window = tk.Tk()
 
 frameA = tk.Frame()
 frameB = tk.Frame()
 frameC = tk.Frame()
+frameD = tk.Frame()
+frameE = tk.Frame()
 label = tk.Label(
         text="stock bot 3000",
         master = frameA)
@@ -52,7 +38,7 @@ tickerInLb = tk.Label(
 
 tickerIn = tk.Entry(
         text = "enter a valid ticker",
-        width = 50,
+        width = 20,
         master = frameB)
 
 tickerConf = tk.Label(text = "", master = frameC)
@@ -60,21 +46,32 @@ tickerConf = tk.Label(text = "", master = frameC)
 btn = tk.Button(
         text="search for stock",
         command=searchTicker,
-        master = frameC
+        master = frameD
         )
 
+makepred = tk.Button(
+        text = 'make prediction',
+        #command = makepred
+        master = frameD
+        )
 
-
+predout = tk.Label(
+        text = '',
+        master = frameE
+        )
 
 frameA.pack()
 frameB.pack()
 frameC.pack()
+frameD.pack()
+frameE.pack()
 label.pack()
 tickerInLb.pack(side=tk.LEFT)
 tickerIn.pack(side=tk.RIGHT)
 tickerConf.pack(side=tk.LEFT)
-btn.pack(side=tk.RIGHT)
-
+btn.pack(side=tk.LEFT)
+makepred.pack(side=tk.RIGHT)
+predout.pack()
 
 
 window.mainloop()

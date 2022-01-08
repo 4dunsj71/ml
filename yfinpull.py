@@ -9,6 +9,9 @@ def yfinpull(ticker):
     tick = yf.Ticker(ticker)
     data = tick.history(period='300d', interval='1d')
     data['Close'].to_csv("close{}.csv".format(ticker))
-    
+    return data    
+
+
+
 
 

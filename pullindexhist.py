@@ -7,7 +7,6 @@ import datetime as dt
 from pandas import read_csv
 from numpy import log
 from time import sleep
-from progress.bar import Bar
 
 def PullIndexHist():
 
@@ -29,18 +28,18 @@ def PullIndexHist():
     print(tickers)
 
     sp500data = pd.DataFrame()
-    with Bar('Retrieving data', fill='|') as bar:
-        for symbol in tickers:
-            try:
-                ticker = yf.Ticker(str(symbol))
-                data = ticker.history(period='300d', interval='1d')
-                sp500data[symbol] = data['Close']
-                print('found:', symbol)
-                bar.next()    
-            except:
-                print("too many requests to yahoo finance, try again later")
-            finally:
-                sp500data.to_csv("csv/SnP500Close.csv")
+
+    for symbol in tickers:
+        try:
+            ticker = yf.Ticker(str(symbol))
+            data = ticker.history(period='300d', interval='1d')
+            sp500data[symbol] = data['Close']
+            print('found:', symbol)
+            bar.next()    
+        except:
+            print("too many requests to yahoo finance, try again later")
+        finally:
+            sp500data.to_csv("csv/SnP500Close.csv")
 
 
 
