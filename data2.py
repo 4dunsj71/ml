@@ -6,8 +6,8 @@ import matplotlib
 import csv
 import datetime as dt
 import pmdarima as pm
-import logging
-import sys
+#import logging
+#import sys
 from sklearn import linear_model
 from pmdarima import auto_arima
 from sklearn.linear_model import LinearRegression
@@ -15,15 +15,15 @@ from pandas.plotting import scatter_matrix
 from pmdarima.model_selection import train_test_split
 from pandas import read_csv
 from matplotlib import pyplot as plt
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, accuracy_score, confusion_matrix, classification_report, silhouette_score
-from statsmodels.tsa.stattools import adfuller
-from numpy import log
+#from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, accuracy_score, confusion_matrix, classification_report, silhouette_score
+#from statsmodels.tsa.stattools import adfuller
+#from numpy import log
 from sklearn.preprocessing import MinMaxScaler, LabelEncoder, StandardScaler, normalize
 from sklearn.cluster import KMeans, SpectralClustering
 from sklearn.neighbors import NearestNeighbors
-from sklearn.decomposition import PCA
+#from sklearn.decomposition import PCA
 
-data = read_csv('SnP500Close.csv')
+data = read_csv('csv/SnP500Close.csv')
 #data = read_csv('SnP500Close.csv', header=None, skiprows=1)
 
 
@@ -35,13 +35,13 @@ print('empty shape:\n',empty.shape)
 
 data = data.dropna()
 
-empty = data[data.isna().any(axis=1)]
+#empty = data[data.isna().any(axis=1)]
 
-print('empty shape:\n',empty.shape)
+#print('empty shape:\n',empty.shape)
 
-print('empty length:',len(empty))
+#print('empty length:',len(empty))
 
-print('empty:\n',empty)
+#print('empty:\n',empty)
 
 
 
@@ -56,7 +56,6 @@ print('empty:\n',empty)
 
 data = data.T
 
-data.to_csv('datawtf.csv')
 #new dataframe created to change date string to datetime, then float for easier calculatioons.
 
 dates = data.iloc[0]
@@ -83,7 +82,6 @@ data = data.astype(float)
 
 
 #np.array(data.drop([0],1).astype(float))
-
 
 #x_data = x_data.round(decimals = 2)
 
@@ -170,23 +168,20 @@ data = data.astype(float)
 
 #for cluster in data['cluster']:
 #    newFrame = data[data['cluster']== cluster]
-#    newFrame.to_csv('{}_cluster.csv'.format(cluster))
-#data.to_csv('SnPclust.csv')
+#    newFrame.to_csv('csv/{}_cluster.csv'.format(cluster))
 
-#data = read_csv('SnPclust.csv')
-#data = data.drop(data.columns[[0]], axis=1, inplace=True)
 
-clustAvg = pd.DataFrame()
 for  cluster in range(0,4):
-    newFrame = read_csv('{}.0_cluster.csv'.format(cluster))
-    #newFrame = newFrame.drop(newFrame.columns[[0]], axis = 1, inplace = True)
-    col = newFrame.columns
-    newFrame = newFrame.iloc[:, 1:len(col)]
-    col = newFrame.columns
-    for ticker in range(1,len(col)):
-        clustAvg[ticker] = newFrame[ticker].mean()
-        
-    clustAvg.to_csv('{}_average.csv'.format(cluster))
+    newFrame = read_csv('csv/{}.0_cluster.csv'.format(cluster))
+    clustAvg = pd.DataFrame(index = np.arange(1), columns = np.arange(newFrame.shape[1])) 
+    col = newFrame.shape[1]
+    newFrame = newFrame.iloc[:, 1:col]
+    col = newFrame.shape[1]
+    
+    for ticker in range(0,col):
+        avg = newFrame.iloc[:,ticker].mean()
+        clustAvg.iloc[:,ticker] = avg
+    clustAvg.to_csv('csv/{}_average.csv'.format(cluster))
 
 
 #----------------------------------------------------------------------------------------------------

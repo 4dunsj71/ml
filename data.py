@@ -29,7 +29,7 @@ head = ['symbol',
         'founded']
 
 
-sp500 = read_csv("s&p500.csv",skiprows=[0], names = head)
+sp500 = read_csv("csv/s&p500.csv",skiprows=[0], names = head)
 sp500['symbol'] = sp500['symbol'].str.replace(' ','')
 
 tickers = sp500['symbol'].tolist()
@@ -47,7 +47,7 @@ with Bar('Retrieving data', fill='|') as bar:
         except:
             print("yahoo finance capped us laddy")
         finally:
-            sp500data.to_csv("SnP500Close.csv")
+            sp500data.to_csv("csv/SnP500Close.csv")
 
 
 #pulls historical close prices for tickers listed

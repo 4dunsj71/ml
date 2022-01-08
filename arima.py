@@ -25,18 +25,10 @@ tickers=[
 #for ticker in tickers:
 #    ticker_a = yf.Ticker(ticker)
 #    data = ticker_a.history(period='300d', interval='1d')
-#    data['Close'].to_csv("close{}.csv".format(ticker))
+#    data['Close'].to_csv("csv/close{}.csv".format(ticker))
 
 #read the csv, from file
 #obviously temp code, needs to be automated from the ground up to pull and train on ticker user selects
-
-#reading in csv, skipping header row, adding own header to target for model
-#data = read_csv("closeaapl.csv",skiprows=[0])
-#data_head = ['date','close']
-
-#im just gonna fucking keep the original head what the fuck even was that error
-
-
 
 data = read_csv("closeaapl.csv")
 data['Date'] = pd.to_datetime(data['Date'])
