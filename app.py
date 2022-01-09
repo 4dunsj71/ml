@@ -18,8 +18,16 @@ def searchTicker():
             tickerConf['text'] = 'ticker found on yfinance, retrieved.\n{}'
         except:
             tickerConf['text'] = 'Ticker not found, check spelling'
-  
-
+ 
+def makepred():
+    tickerName = tickerIn.get()
+    try:
+         print(tickerName)
+         prediction = ArimaPred(tickerName)
+         predout['text'] = prediction
+         tickerConf['text'] = 'please wait for prediction:'
+    except:
+        tickerConf['text'] = 'an error has occured, please search for the ticker again'
 
 window = tk.Tk()
 
@@ -49,9 +57,9 @@ btn = tk.Button(
         master = frameD
         )
 
-makepred = tk.Button(
+submitpred = tk.Button(
         text = 'make prediction',
-        #command = makepred
+        command = makepred,
         master = frameD
         )
 
@@ -70,7 +78,7 @@ tickerInLb.pack(side=tk.LEFT)
 tickerIn.pack(side=tk.RIGHT)
 tickerConf.pack(side=tk.LEFT)
 btn.pack(side=tk.LEFT)
-makepred.pack(side=tk.RIGHT)
+submitpred.pack(side=tk.RIGHT)
 predout.pack()
 
 

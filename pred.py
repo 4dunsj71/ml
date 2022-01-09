@@ -18,7 +18,7 @@ from statsmodels.tsa.stattools import adfuller
 from numpy import log
 
 def ArimaPred(csv):
-    data = read_csv("csv/{}.csv".format(csv))
+    data = read_csv("csv/close{}.csv".format(csv))
     data['Date'] = pd.to_datetime(data['Date'])
     data['Date'] = data['Date'].astype('int64').astype(float)
     data['Close'] = data['Close'].astype(float)
