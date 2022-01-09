@@ -85,13 +85,13 @@ def NewClustAvg():
     data['cluster'] = frame['cluster']
 
     data['cluster'].astype('category')
-
+    print(data['cluster'])
     for cluster in data['cluster']:
         newFrame = data[data['cluster']== cluster]
         newFrame.to_csv('csv/{}_cluster.csv'.format(cluster))
 
 
-    for  cluster in range(0,4):
+    for  cluster in range(0,5):
         newFrame = read_csv('csv/{}.0_cluster.csv'.format(cluster))
         clustAvg = pd.DataFrame(index = np.arange(1), columns = np.arange(newFrame.shape[1])) 
         col = newFrame.shape[1]
@@ -101,7 +101,8 @@ def NewClustAvg():
         for ticker in range(0,col):
             avg = newFrame.iloc[:,ticker].mean()
             clustAvg.iloc[:,ticker] = avg
+        
         clustAvg.to_csv('csv/{}_average.csv'.format(cluster))
+        
 
-
-    
+NewClustAvg    

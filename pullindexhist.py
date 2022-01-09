@@ -34,8 +34,7 @@ def PullIndexHist():
             ticker = yf.Ticker(str(symbol))
             data = ticker.history(period='300d', interval='1d')
             sp500data[symbol] = data['Close']
-            print('found:', symbol)
-            bar.next()    
+            print('found:', symbol)    
         except:
             print("too many requests to yahoo finance, try again later")
         finally:
