@@ -25,52 +25,54 @@ from sklearn.neighbors import NearestNeighbors
 def NewClustAvg():
 
     data = read_csv('csv/SnP500Close.csv')
-
-    data.fillna(data.mean())
-
-    empty = data[data.isna().any(axis=1)]
-    print('empty shape:\n',empty.shape)
-
-    data = data.dropna()
-    
-    #transpose to make dates the head for the dataframe, to make kmeans cluster for companies not for dates
-
+    #drop empty values from dataset
+    print(data.shape)
+    #data.dropna(how='all', axis=1, inplace=True)
+    #print(data.shape) 
+    data.dropna(axis = 1, inplace=True)
+    print(data.shape)
+    #transpose dataset for clustering
     data = data.T
-
+    print(data.shape) 
+    
     #new dataframe created to change date string to datetime, then float for easier calculatioons.
 
     dates = data.iloc[0]
-
+    
     dates = pd.to_datetime(dates)
 
     dates = dates.astype('int64').astype(float)
+    prices = data.iloc[1:-1].astype(float)
+    print(prices)
 
     data.iloc[0] = dates
-
-    data = data.astype(float)
-
+    data.iloc[1:-1] = prices 
+    #print(data.iloc[1:-1]) 
+    #data.iloc[1:-1] = data.astype(float)
+    print(data.head(3))
     #----------------------------------------------------------------------------------------------------
 
     #Kmeans prediction
 
     #----------------------------------------------------------------------------------------------------
 
-    kmeans = KMeans(n_clusters = 5, init='k-means++')
+   # kmeans = KMeans(n_clusters = 5, init='k-means++')
 
-    kmeans.fit(x_scaled)
+    #kmeans.fit(x_scaled)
 
-    pred = kmeans.predict(x_scaled)
+    #pred = kmeans.predict(x_scaled)
 
-    frame = pd.DataFrame(x_scaled)
+    #frame = pd.DataFrame(x_scaled)
 
-    frame['cluster'] = pred
+    #frame['cluster'] = pred
 
-    print(frame['cluster'].value_counts())
+    #print(frame['cluster'].value_counts())
 
     data = data.round(5)
 
     kmeans = KMeans(n_clusters = 5, init='k-means++')
-    x_data = data.drop(['Date'])
+    x_data = prices
+    #x_data = data.drop(['Date'])
     print(x_data)
     kmeans.fit(x_data)
 
