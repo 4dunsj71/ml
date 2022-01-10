@@ -149,26 +149,26 @@ data = data.astype(float)
 
 #data = data.round(5)
 
-#kmeans = KMeans(n_clusters = 5, init='k-means++')
-#x_data = data.drop(['Date'])
-#print(x_data)
-#kmeans.fit(x_data)
+kmeans = KMeans(n_clusters = 5, init='k-means++')
+x_data = data.drop(['Date'])
+print('x_data\n',x_data)
+kmeans.fit(x_data)
 
-#pred = kmeans.predict(x_data)
+pred = kmeans.predict(x_data)
 
-#frame = pd.DataFrame(x_data)
+frame = pd.DataFrame(x_data)
 
-#frame['cluster'] = pred
+frame['cluster'] = pred
 
-#print(frame['cluster'].value_counts())
+print(frame['cluster'].value_counts())
 
-#data['cluster'] = frame['cluster']
+data['cluster'] = frame['cluster']
 
-#data['cluster'].astype('category')
+data['cluster'].astype('category')
 
-#for cluster in data['cluster']:
-#    newFrame = data[data['cluster']== cluster]
-#    newFrame.to_csv('csv/{}_cluster.csv'.format(cluster))
+for cluster in data['cluster']:
+    newFrame = data[data['cluster']== cluster]
+    newFrame.to_csv('csv/{}_cluster.csv'.format(cluster))
 
 
 for  cluster in range(0,4):
