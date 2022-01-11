@@ -1,6 +1,7 @@
 import tkinter as tk
 import pandas as pd
 import numpy as np
+import matplotlib
 import yfinpull
 import pred
 import newclustavg
@@ -16,6 +17,7 @@ from pullindexhist import PullIndexHist
 from compare import Compare
 from predfromclust import PredFromClust
 from datetime import date, timedelta
+from matplotlib import pyplot as plt
 def searchforticker():
     tickername = tickerIn.get()
     if tickername != "":
@@ -28,7 +30,7 @@ def searchforticker():
             YfinPull(tickername)
             data = read_csv('csv/close{}.csv'.format(tickername))
             #print(data['Close'])
-            if len(data) == 300:
+            if en(data) == 300:
                 data.to_csv('csv/close{}.csv'.format(tickername))
                 tickerConf['text'] = 'ticker history retrieved from yfinance'
     else:
@@ -57,11 +59,26 @@ def makeprediction():
             if diff[1]<20:
                 print(diff)
                 prediction = PredFromClust(data,periods)
+                newdates = pd.Series()
+                for x in range(0,periods):
+                    datediff = timedelta(x)
+                    newdate = lastdate + datediff
+                    newdates[x] = newdate
+                xaxis = data['Date']
+                xaxis2 = newdates
+                yaxis = data['Close']
+                yaxis2 = prediction
+
+                plt.plot(xaxis,yaxis,label = 'data from yfinance')
+                plt.plot(xaxis2,yaxis2,label = 'predictions')
+                plt.legend()
+                plt.show()
                 lastpred = prediction[-1]
                 print(lastpred)
                 predConf['text'] = 'prediction date:{}\nprediction = £:{}\nlast date in system:{}\nlast price in system:{}'.format(preddate,round(lastpred,2),lastdate,round(lastprice,2))
             else:
                 prediction = ArimaPred(data,periods)
+                
                 lastpred = prediction[-1]
                 predConf['text'] = 'prediction date:{}\nprediction = £:{}\nlast date in system:{}\nlast price in system:{}'.format(preddate,round(lastpred,2),lastdate,round(lastprice,2))
         except:

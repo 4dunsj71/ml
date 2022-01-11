@@ -40,12 +40,12 @@ def ArimaPred(csv):
     #print('ADF Statistic: %f' % result[0])
     #print('p-value: %f' % result[1])
 
-    d = pm.arima.ndiffs(y_train) 
-    #D = pm.arima.nsdiffs(y_train, m = 7)
+    d = pm.arima.ndiffs(y) 
+    D = pm.arima.nsdiffs(y, m = 14)
 
-    model = auto_arima(y_train,d = d, start_p=1, start_q=1, m= 7 ,D = 1, stepwise=True, trace=True, seasonal = True)
+    model = auto_arima(y,d = d, start_p=1, start_q=1, m= 14 ,D = D, stepwise=True, trace=True, seasonal = True)
 
-    model.fit(y_train)
+    model.fit(y)
     print(model.summary())
     return model
  

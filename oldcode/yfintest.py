@@ -17,15 +17,15 @@ from matplotlib import pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, accuracy_score, confusion_matrix, classification_report
 
 tickers=[
-        'aapl',
-        'msft'
+        
+        'aapl'
     ]
 
 #pulls historical close prices for tickers listed
-#for ticker in tickers:
-#    ticker_a = yf.Ticker(ticker)
-#    data = ticker_a.history(period='300d', interval='1d')
-#    data['Close'].to_csv("close{}.csv".format(ticker))
+for ticker in tickers:
+    ticker_a = yf.Ticker(ticker)
+    data = ticker_a.history(period='900d', interval='1d')
+    data['Close'].to_csv("close{}.csv".format(ticker))
 
 #read the csv, from file
 #obviously temp code, needs to be automated from the ground up to pull and train on ticker user selects
