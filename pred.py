@@ -17,8 +17,9 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, a
 from statsmodels.tsa.stattools import adfuller
 from numpy import log
 
-def ArimaPred(csv):
-    data = read_csv("csv/close{}.csv".format(csv))
+def ArimaPred(csv,periods):
+    data = csv
+    periods = int(periods)
     data['Date'] = pd.to_datetime(data['Date'])
     data['Date'] = data['Date'].astype('int64').astype(float)
     data['Close'] = data['Close'].astype(float)
@@ -41,14 +42,13 @@ def ArimaPred(csv):
     #print('p-value: %f' % result[1])
 
     d = pm.arima.ndiffs(y_train) 
-    D = pm.arima.nsdiffs(y_train, m = 48)
+   # D = pm.arima.nsdiffs(y_train, m = 48)
 
-    model = auto_arima(y_train,d = d, start_p=1, start_q=1, m= 48 ,D = 1, stepwise=True, trace=True, seasonal = True)
+    model = auto_arima(y_train,d = d, start_p=1, start_q=1, m= 7 ,D = 1, stepwise=True, trace=True, seasonal = True)
 
     model.fit(y_train)
     print(model.summary())
-    y_predict = model.predict(start=len(y_train), n_periods=len(x_test))
-    print(y_predict)
+    y_predict = model.predict(start=len(y_train), n_periods=periods)
     return y_predict
 
 

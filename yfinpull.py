@@ -5,11 +5,12 @@ import csv
 from pandas import read_csv
 
 
-def yfinpull(ticker): 
+def YfinPull(ticker):
+    ticker = str(ticker)
     tick = yf.Ticker(ticker)
     data = tick.history(period='300d', interval='1d')
-    data['Close'].to_csv("close{}.csv".format(ticker))
-    return data    
+    data['Close'].to_csv("csv/close{}.csv".format(ticker))    
+
 
 
 
