@@ -5,6 +5,8 @@ from pandas import read_csv
 
 def FixGarbage():
     dates = read_csv('csv/SnP500Close.csv')
+    print(dates)
+    dates.dropna(axis=1,inplace=True)
     date = dates['Date']
     for x in range(0,4):
         data = read_csv('csv/{}_average.csv'.format(x))

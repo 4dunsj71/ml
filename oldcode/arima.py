@@ -60,7 +60,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1)
 d = pm.arima.ndiffs(y, test='adf')
 print(d)
 #m = 52
-m = 52
+m = 7
 #d = pm.arima.ndiffs(y_train) 
 D = pm.arima.nsdiffs(y_train, m = m, max_D = 300)
 print(D)

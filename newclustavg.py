@@ -43,13 +43,13 @@ def NewClustAvg():
 
     dates = dates.astype('int64').astype(float)
     prices = data.iloc[1:-1].astype(float)
-    print(prices)
+    print("prices",prices)
 
     data.iloc[0] = dates
     data.iloc[1:-1] = prices 
     #print(data.iloc[1:-1]) 
     #data.iloc[1:-1] = data.astype(float)
-    print(data.head(3))
+    print('data:',data.head(3))
     #----------------------------------------------------------------------------------------------------
 
     #Kmeans prediction
@@ -73,7 +73,7 @@ def NewClustAvg():
     kmeans = KMeans(n_clusters = 5, init='k-means++')
     x_data = prices
     #x_data = data.drop(['Date'])
-    print(x_data)
+    print('x_data',x_data)
     kmeans.fit(x_data)
 
     pred = kmeans.predict(x_data)
@@ -85,13 +85,13 @@ def NewClustAvg():
     print(frame['cluster'].value_counts())
 
     data['cluster'] = frame['cluster']
-
+    print('data[cluster]:',data['cluster'])
     data['cluster'].astype('category')
-
+    
     for cluster in data['cluster']:
         newFrame = data[data['cluster']== cluster]
         newFrame.to_csv('csv/{}_cluster.csv'.format(cluster))
-
+        print('newframe:',newFrame)
 
     for  cluster in range(0,4):
         newFrame = read_csv('csv/{}.0_cluster.csv'.format(cluster))
@@ -103,7 +103,7 @@ def NewClustAvg():
         for ticker in range(0,col):
             avg = newFrame.iloc[:,ticker].mean()
             clustAvg.iloc[:,ticker] = avg
+        print('clustavg',clustAvg,col)
         clustAvg.to_csv('csv/{}_average.csv'.format(cluster))
 
-
-    
+ 

@@ -2,12 +2,16 @@ import tkinter as tk
 import pandas as pd
 import numpy as np
 import matplotlib
+from makepickles import MakePickles
 import yfinpull
 import pred
 import newclustavg
 import pullindexhist
 import compare
 import predfromclust
+import onstart
+import garbagefix
+import makepickles
 import datetime as dt
 from pandas import read_csv
 from yfinpull import YfinPull
@@ -16,21 +20,47 @@ from newclustavg import NewClustAvg
 from pullindexhist import PullIndexHist
 from compare import Compare
 from predfromclust import PredFromClust
+from onstart import OnStart
+from garbagefix import FixGarbage
+from makepickles import MakePickles
 from datetime import date, timedelta
 from matplotlib import pyplot as plt
+#OnStart()
+
+try:
+    data = read_csv('csv/SnP500Close.csv')
+except:
+    PullIndexHist()
+    data = read_csv('csv/SnP500Close.csv')
+today = date.today()
+today = pd.to_datetime(today)
+snpdates = pd.to_datetime(data['Date'])
+latestsnp = snpdates.iat[snpdates.shape[0]-1]
+timediff = today - latestsnp
+timecap = dt.timedelta(days = 30)
+
+if timediff > timecap:
+    NewClustAvg()
+    FixGarbage()
+    MakePickles()
+
+        
+
 def searchforticker():
+    
+    #historylength = int(historyIn.get())
     tickername = tickerIn.get()
     if tickername != "":
         try:
             data = read_csv('csv/close{}.csv'.format(tickername))
-            if len(data) == 300:
+            if len(data) != 0:
                 tickerConf['text'] = 'ticker found in storage'
                 #print(data['Close'])
         except:
             YfinPull(tickername)
             data = read_csv('csv/close{}.csv'.format(tickername))
             #print(data['Close'])
-            if en(data) == 300:
+            if len(data) != 0:
                 data.to_csv('csv/close{}.csv'.format(tickername))
                 tickerConf['text'] = 'ticker history retrieved from yfinance'
     else:
@@ -38,13 +68,13 @@ def searchforticker():
 
 def makeprediction():
     tickername = tickerIn.get()
-    periods = int(periodsIn.get()) + 60
+    periods = int(periodsIn.get())
     if tickername !="":
         try:
             data = read_csv('csv/close{}.csv'.format(tickername))
             if data.shape[1] == 3:
                 data.drop(data.columns[0],axis = 1, inplace=True)
-            
+                print(data)
             data['Date'] = pd.to_datetime(data['Date']).dt.date
             dates = data['Date']
             prices =data['Close']
@@ -56,18 +86,19 @@ def makeprediction():
             
             diff = Compare(data)
             print(diff)
-            if diff[1]<20:
+            if diff[1]<50:
                 print(diff)
                 prediction = PredFromClust(data,periods)
-                newdates = pd.Series()
+                print(prediction)
+                newdates = pd.Series([])
                 for x in range(0,periods):
                     datediff = timedelta(x)
                     newdate = lastdate + datediff
-                    newdates[x] = newdate
-                xaxis = data['Date']
+                    newdates = np.append(newdates,newdate)
+                xaxis = data['Date'].tail(10)
                 xaxis2 = newdates
-                yaxis = data['Close']
-                yaxis2 = prediction
+                yaxis = data['Close'].tail(10)
+                yaxis2 = round(prediction,2)
 
                 plt.plot(xaxis,yaxis,label = 'data from yfinance')
                 plt.plot(xaxis2,yaxis2,label = 'predictions')
@@ -78,7 +109,23 @@ def makeprediction():
                 predConf['text'] = 'prediction date:{}\nprediction = £:{}\nlast date in system:{}\nlast price in system:{}'.format(preddate,round(lastpred,2),lastdate,round(lastprice,2))
             else:
                 prediction = ArimaPred(data,periods)
-                
+                newdates = pd.Series([])
+                for x in range(0,periods):
+                    datediff = timedelta(x)
+                    newdate = lastdate + datediff
+                    newdates = np.append(newdates,newdate)
+                xaxis = data['Date']
+                xaxis = xaxis.tail(10)
+                xaxis2 = newdates
+                yaxis = data['Close']
+                yaxis = yaxis.tail(10)
+                yaxis2 = round(prediction,2)
+
+                plt.plot(xaxis,yaxis,label = 'data from yfinance')
+                plt.plot(xaxis2,yaxis2,label = 'predictions')
+                plt.legend()
+                plt.show()
+
                 lastpred = prediction[-1]
                 predConf['text'] = 'prediction date:{}\nprediction = £:{}\nlast date in system:{}\nlast price in system:{}'.format(preddate,round(lastpred,2),lastdate,round(lastprice,2))
         except:
@@ -97,7 +144,11 @@ title = tk.Label(
         text='stock predictor',
         master=frame1
         )
-
+historyIn = tk.Entry(
+        text = 'input a length of history in days',
+        width = 5,
+        master = frame1
+        )
 tickerIn = tk.Entry(
         text = '',
         width = 10,
@@ -144,6 +195,7 @@ frame3.pack()
 frame4.pack()
 frame5.pack()
 title.pack()
+#historyIn.pack(side=tk.RIGHT)
 tickerIn.pack(side=tk.LEFT)
 periodsIn.pack(side=tk.RIGHT)
 tickerSearch.pack(side=tk.LEFT)

@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, accuracy_score, confusion_matrix, classification_report
 from statsmodels.tsa.stattools import adfuller
 from numpy import log
-
+from pmdarima.arima import StepwiseContext
 def ArimaPred(csv,periods):
     data = csv
     periods = int(periods)
@@ -41,11 +41,14 @@ def ArimaPred(csv,periods):
     #print('ADF Statistic: %f' % result[0])
     #print('p-value: %f' % result[1])
 
-    d = pm.arima.ndiffs(y)
+    #d = pm.arima.ndiffs(y)
     #D = pm.arima.nsdiffs(y, m = 14)
-
-    model = auto_arima(y_train,d = d, start_p=1, start_q=1, m= 14 ,D = 1, stepwise=True, trace=True, seasonal = True)
-    
+    d = pm.arima.ndiffs(y, test='adf')
+    #model = auto_arima(y_train,d = d, start_p=1, start_q=1, m= 14 ,D = 1, stepwise=True, trace=True, seasonal = True)
+    with StepwiseContext(max_dur=30):
+        with StepwiseContext(max_steps=10):
+            model = auto_arima(y,d = d, start_p=1, start_q=1, m= 52,D = 1 ,method = 'nm', stepwise=True, trace=True, seasonal = True)
+ 
     model.fit(y)
     print(model.summary())
     y_predict = model.predict(start=len(y), n_periods=periods)

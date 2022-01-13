@@ -32,12 +32,13 @@ def PullIndexHist():
     for symbol in tickers:
         try:
             ticker = yf.Ticker(str(symbol))
-            data = ticker.history(period='300d', interval='1d')
+            data = ticker.history(period='900d', interval='1d')
             sp500data[symbol] = data['Close']
             print('found:', symbol)    
         except:
             print("too many requests to yahoo finance, try again later")
         finally:
+            sp500data.dropna(axis = 1,inplace=True)
             sp500data.to_csv("csv/SnP500Close.csv")
 
 
