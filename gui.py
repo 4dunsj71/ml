@@ -9,7 +9,6 @@ import newclustavg
 import pullindexhist
 import compare
 import predfromclust
-import onstart
 import garbagefix
 import makepickles
 import datetime as dt
@@ -25,7 +24,7 @@ from makepickles import MakePickles
 from datetime import date, timedelta
 from matplotlib import pyplot as plt
 
-
+#check for historical data and check it's in date
 try:
     data = read_csv('csv/SnP500Close.csv')
 except:
@@ -37,6 +36,20 @@ snpdates = pd.to_datetime(data['Date'])
 latestsnp = snpdates.iat[snpdates.shape[0]-1]
 timediff = today - latestsnp
 timecap = dt.timedelta(days = 30)
+
+#check for cluster averages
+try:
+    data = read_csv('csv/0_average.csv')
+except:
+    NewClustAvg()
+    FixGarbage()
+#check for pretrained models
+try:
+    infile = open('0clustmodel','rb')
+    newmod = pickle.load(infile)
+    infile.close()
+except:
+    MakePickles()
 
 if timediff > timecap:
     NewClustAvg()
