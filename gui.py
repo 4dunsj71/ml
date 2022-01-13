@@ -20,12 +20,11 @@ from newclustavg import NewClustAvg
 from pullindexhist import PullIndexHist
 from compare import Compare
 from predfromclust import PredFromClust
-from onstart import OnStart
 from garbagefix import FixGarbage
 from makepickles import MakePickles
 from datetime import date, timedelta
 from matplotlib import pyplot as plt
-#OnStart()
+
 
 try:
     data = read_csv('csv/SnP500Close.csv')
